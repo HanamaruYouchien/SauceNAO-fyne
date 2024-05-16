@@ -7,11 +7,14 @@ import (
 	"fyne.io/fyne/v2/widget"
 )
 
-func ApikeyEntry(onSave func()) *fyne.Container {
+func ApikeyEntry(apikey string, onSave func(newApikey string)) *fyne.Container {
 	entry := widget.NewPasswordEntry()
 	entry.SetPlaceHolder("Input your API key")
+	entry.Text = apikey
 
-	btnSave := widget.NewButton("Save", onSave)
+	btnSave := widget.NewButton("Save", func() {
+		onSave(entry.Text)
+	})
 	btnContainer := container.New(layout.NewHBoxLayout(), layout.NewSpacer(), btnSave)
 	return container.New(layout.NewVBoxLayout(), entry, btnContainer)
 }
