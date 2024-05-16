@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"strconv"
 
 	"fyne.io/fyne/v2/app"
 
@@ -17,5 +18,12 @@ func main() {
 		apikey = newApikey
 		fmt.Println(apikey)
 	}))
-	w.ShowAndRun()
+
+	image := &[]byte{}
+	w2 := a.NewWindow("Select Image")
+	w2.SetContent(component.ImageFileSelector(&w2, func(img *[]byte) {
+		image = img
+		fmt.Println(strconv.Itoa(len(*image)))
+	}))
+	w2.ShowAndRun()
 }
