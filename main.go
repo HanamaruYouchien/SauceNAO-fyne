@@ -25,5 +25,8 @@ func main() {
 		image = img
 		fmt.Println(strconv.Itoa(len(*image)))
 	}))
-	w2.ShowAndRun()
+
+	w3 := a.NewWindow("Image Url")
+	w3.SetContent(component.ImageUrlEntry())
+	w3.ShowAndRun()
 }

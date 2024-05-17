@@ -10,7 +10,8 @@ import (
 func ApikeyEntry(apikey string, onSave func(newApikey string)) *fyne.Container {
 	entry := widget.NewPasswordEntry()
 	entry.SetPlaceHolder("Input your API key")
-	entry.Text = apikey
+	entry.SetText(apikey)
+	// entry.Validator
 
 	btnSave := widget.NewButton("Save", func() {
 		onSave(entry.Text)

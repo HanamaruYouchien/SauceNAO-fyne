@@ -9,6 +9,13 @@ import (
 	"fyne.io/fyne/v2/widget"
 )
 
+func ImageUrlEntry() *widget.Entry {
+	entry := widget.NewEntry()
+	entry.SetPlaceHolder("Image URL to search")
+	// entry.OnSubmitted
+	return entry
+}
+
 func ImageFileSelector(win *fyne.Window, onSelectImage func(image *[]byte)) *widget.Button {
 	btnOpenImage := widget.NewButton("Select Image", func() {
 		imageDialog := dialog.NewFileOpen(func(reader fyne.URIReadCloser, err error) {
