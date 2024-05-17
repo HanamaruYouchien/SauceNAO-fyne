@@ -18,21 +18,14 @@ func main() {
 	a := app.New()
 	pref := a.Preferences()
 
-	image := &[]byte{}
 	w4 := a.NewWindow("ImagePicker")
-	imageMethod := component.METHOD_FILE
-	w4.SetContent(component.ImagePicker(&w4, func(method bool) {
-		imageMethod = method
-	}, func(img *[]byte) {
-		image = img
-		fmt.Println(strconv.Itoa(len(*image)))
-	}, func() {
+	w4.SetContent(component.ImagePicker(&w4, func(method bool, img *[]byte, url string) {
 		msg := "Method: "
-		switch imageMethod {
+		switch method {
 		case component.METHOD_FILE:
-			msg += "File\nFile size:" + strconv.Itoa(len(*image))
+			msg += "File\nFile size:" + strconv.Itoa(len(*img))
 		case component.METHOD_URL:
-			msg += "URL"
+			msg += "URL\nURL: " + url
 		}
 		dialog.NewInformation("Query", msg, w4).Show()
 	}))
@@ -45,14 +38,5 @@ func main() {
 		fmt.Println(apikey)
 	}))
 
-	w2 := a.NewWindow("Select Image")
-	w2.SetContent(component.ImageFileSelector(&w2, func(img *[]byte) {
-		image = img
-		fmt.Println(strconv.Itoa(len(*image)))
-	}))
-
-	w3 := a.NewWindow("Image Url")
-	w3.SetContent(component.ImageUrlEntry())
-
-	w.ShowAndRun()
+	w4.ShowAndRun()
 }

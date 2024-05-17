@@ -5,6 +5,7 @@ import (
 
 	"fyne.io/fyne/v2"
 	"fyne.io/fyne/v2/container"
+	"fyne.io/fyne/v2/data/binding"
 	"fyne.io/fyne/v2/dialog"
 	"fyne.io/fyne/v2/layout"
 	"fyne.io/fyne/v2/storage"
@@ -16,40 +17,50 @@ const (
 	METHOD_URL  = true
 )
 
-func ImagePicker(win *fyne.Window, setMethod func(bool), onSelectImage func(image *[]byte), onSearch func()) *fyne.Container {
+func ImagePicker(win *fyne.Window, onSearch func(method bool, img *[]byte, url string)) *fyne.Container {
 	const (
 		OPTION_FILE = "File"
 		OPTION_URL  = "URL"
 	)
+
 	title := widget.NewLabel("Search by")
 
-	selector := ImageFileSelector(win, onSelectImage)
+	image := &[]byte{}
+	selector := ImageFileSelector(win, func(img *[]byte) {
+		image = img
+	})
 
-	entry := ImageUrlEntry()
+	etyUrl := binding.NewString()
+	entry := ImageUrlEntry(&etyUrl)
 
+	method := METHOD_FILE
 	radio := widget.NewRadioGroup([]string{OPTION_FILE, OPTION_URL}, func(val string) {
-		state := true
 		switch val {
 		case OPTION_FILE:
-			state = METHOD_FILE
+			method = METHOD_FILE
 		case OPTION_URL:
-			state = METHOD_URL
+			method = METHOD_URL
 		}
-		setMethod(state)
-		selector.Hidden = state
-		entry.Hidden = !state
+		selector.Hidden = method
+		entry.Hidden = !method
 	})
 	radio.Horizontal = true
 	radio.SetSelected(OPTION_FILE)
 	switchMethodContainer := container.New(layout.NewHBoxLayout(), title, layout.NewSpacer(), radio)
 
-	btnSearch := widget.NewButton("Search", onSearch)
+	btnSearch := widget.NewButton("Search", func() {
+		url, err := etyUrl.Get()
+		if err != nil {
+			return
+		}
+		onSearch(method, image, url)
+	})
 
 	return container.New(layout.NewVBoxLayout(), switchMethodContainer, selector, entry, btnSearch)
 }
 
-func ImageUrlEntry() *widget.Entry {
-	entry := widget.NewEntry()
+func ImageUrlEntry(data *binding.String) *widget.Entry {
+	entry := widget.NewEntryWithData(*data)
 	entry.SetPlaceHolder("Image URL to search")
 	// entry.OnSubmitted
 	return entry
