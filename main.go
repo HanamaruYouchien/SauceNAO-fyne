@@ -10,26 +10,15 @@ import (
 	"github.com/HanamaruYouchien/SauceNAO-fyne/ui/component"
 )
 
+const (
+	PREF_FIELD_APIKEY = "apikey"
+)
+
 func main() {
 	a := app.New()
-	w := a.NewWindow("Hello World")
-
-	apikey := "myKey"
-	w.SetContent(component.ApikeyEntry(apikey, func(newApikey string) {
-		apikey = newApikey
-		fmt.Println(apikey)
-	}))
+	pref := a.Preferences()
 
 	image := &[]byte{}
-	w2 := a.NewWindow("Select Image")
-	w2.SetContent(component.ImageFileSelector(&w2, func(img *[]byte) {
-		image = img
-		fmt.Println(strconv.Itoa(len(*image)))
-	}))
-
-	w3 := a.NewWindow("Image Url")
-	w3.SetContent(component.ImageUrlEntry())
-
 	w4 := a.NewWindow("ImagePicker")
 	imageMethod := component.METHOD_FILE
 	w4.SetContent(component.ImagePicker(&w4, func(method bool) {
@@ -47,6 +36,23 @@ func main() {
 		}
 		dialog.NewInformation("Query", msg, w4).Show()
 	}))
-	w4.ShowAndRun()
-	_ = imageMethod
+
+	apikey := pref.StringWithFallback(PREF_FIELD_APIKEY, "")
+	w := a.NewWindow("Hello World")
+	w.SetContent(component.ApikeyEntry(apikey, func(newApikey string) {
+		apikey = newApikey
+		pref.SetString(PREF_FIELD_APIKEY, apikey)
+		fmt.Println(apikey)
+	}))
+
+	w2 := a.NewWindow("Select Image")
+	w2.SetContent(component.ImageFileSelector(&w2, func(img *[]byte) {
+		image = img
+		fmt.Println(strconv.Itoa(len(*image)))
+	}))
+
+	w3 := a.NewWindow("Image Url")
+	w3.SetContent(component.ImageUrlEntry())
+
+	w.ShowAndRun()
 }

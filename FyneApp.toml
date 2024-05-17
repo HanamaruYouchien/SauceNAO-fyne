@@ -1,0 +1,8 @@
+Website = "https://github.com/HanamaruYouchien/SauceNAO-fyne"
+
+[Details]
+# Icon = "Icon.png"
+Name = "SauceNAO"
+ID = "org.eu.sdsz.hanamaru.SauceNAO-fyne"
+Version = "0.1.0"
+Build = 1
