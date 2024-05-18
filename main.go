@@ -6,8 +6,8 @@ import (
 
 	"fyne.io/fyne/v2"
 	"fyne.io/fyne/v2/app"
-	"fyne.io/fyne/v2/dialog"
 
+	"github.com/HanamaruYouchien/SauceNAO-fyne/pkg/saucenao"
 	"github.com/HanamaruYouchien/SauceNAO-fyne/ui/component"
 	"github.com/HanamaruYouchien/SauceNAO-fyne/ui/screen"
 )
@@ -39,14 +39,19 @@ func main() {
 				msg += "File\nFile size:" + strconv.Itoa(len(*img))
 			case component.METHOD_URL:
 				msg += "URL\nURL: " + url
+				fmt.Println(msg)
+				resp, err := saucenao.SearchByURL(apikey, url)
+				if err != nil {
+					fmt.Println(err)
+					return
+				}
+				fmt.Println(string(resp))
 			}
-			dialog.NewInformation("Query", msg, mainWindow).Show()
 		},
 		func() {
 			ShowSettingsScreen(&a, apikey, func(newApikey string) {
 				apikey = newApikey
 				pref.SetString(PREF_FIELD_APIKEY, apikey)
-				fmt.Println(apikey)
 			})
 		},
 	))
