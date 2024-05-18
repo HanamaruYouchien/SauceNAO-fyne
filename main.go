@@ -34,19 +34,22 @@ func main() {
 		&mainWindow,
 		func(method bool, img *[]byte, url string) {
 			msg := "Method: "
+			resp := []byte{}
+			var err error
 			switch method {
 			case component.METHOD_FILE:
 				msg += "File\nFile size:" + strconv.Itoa(len(*img))
+				resp, err = saucenao.SearchByFile(apikey, *img)
 			case component.METHOD_URL:
 				msg += "URL\nURL: " + url
-				fmt.Println(msg)
-				resp, err := saucenao.SearchByURL(apikey, url)
-				if err != nil {
-					fmt.Println(err)
-					return
-				}
-				fmt.Println(string(resp))
+				resp, err = saucenao.SearchByURL(apikey, url)
 			}
+			fmt.Println(msg)
+			if err != nil {
+				fmt.Println(err)
+				return
+			}
+			fmt.Println(string(resp))
 		},
 		func() {
 			ShowSettingsScreen(&a, apikey, func(newApikey string) {
