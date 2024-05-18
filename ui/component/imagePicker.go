@@ -31,7 +31,7 @@ func ImagePicker(win *fyne.Window, onSearch func(method bool, img *[]byte, url s
 	})
 
 	etyUrl := binding.NewString()
-	entry := ImageUrlEntry(&etyUrl)
+	entry := ImageUrlEntry(etyUrl)
 
 	method := METHOD_FILE
 	radio := widget.NewRadioGroup([]string{OPTION_FILE, OPTION_URL}, func(val string) {
@@ -59,8 +59,8 @@ func ImagePicker(win *fyne.Window, onSearch func(method bool, img *[]byte, url s
 	return container.New(layout.NewVBoxLayout(), switchMethodContainer, selector, entry, btnSearch)
 }
 
-func ImageUrlEntry(data *binding.String) *widget.Entry {
-	entry := widget.NewEntryWithData(*data)
+func ImageUrlEntry(data binding.String) *widget.Entry {
+	entry := widget.NewEntryWithData(data)
 	entry.SetPlaceHolder("Image URL to search")
 	// entry.OnSubmitted
 	return entry
