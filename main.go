@@ -8,6 +8,7 @@ import (
 	"fyne.io/fyne/v2/dialog"
 
 	"github.com/HanamaruYouchien/SauceNAO-fyne/ui/component"
+	"github.com/HanamaruYouchien/SauceNAO-fyne/ui/screen"
 )
 
 const (
@@ -19,7 +20,7 @@ func main() {
 	pref := a.Preferences()
 
 	w4 := a.NewWindow("ImagePicker")
-	w4.SetContent(component.ImagePicker(&w4, func(method bool, img *[]byte, url string) {
+	w4.SetContent(screen.MainScreen(&w4, func(method bool, img *[]byte, url string) {
 		msg := "Method: "
 		switch method {
 		case component.METHOD_FILE:
@@ -28,7 +29,7 @@ func main() {
 			msg += "URL\nURL: " + url
 		}
 		dialog.NewInformation("Query", msg, w4).Show()
-	}))
+	}, func() { fmt.Println("settings") }))
 
 	apikey := pref.StringWithFallback(PREF_FIELD_APIKEY, "")
 	w := a.NewWindow("Hello World")
