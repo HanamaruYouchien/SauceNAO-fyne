@@ -62,6 +62,10 @@ func main() {
 		},
 	))
 
-	mainWindow.Show()
+	w := a.NewWindow("Result")
+	w.SetContent(component.ResultItem("https://saucenao.com/images/static/banner_large.gif", "Saucenao", "logo", "https://saucenao.com", 50))
+
+	// mainWindow.Show()
+	w.Show()
 	a.Run()
 }
