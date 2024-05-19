@@ -34,7 +34,7 @@ func main() {
 		&mainWindow,
 		func(method bool, img *[]byte, url string) {
 			msg := "Method: "
-			resp := []byte{}
+			resp := &saucenao.Response{}
 			var err error
 			switch method {
 			case component.METHOD_FILE:
@@ -49,7 +49,10 @@ func main() {
 				fmt.Println(err)
 				return
 			}
-			fmt.Println(string(resp))
+
+			for k, v := range resp.Results {
+				fmt.Println(k, v)
+			}
 		},
 		func() {
 			ShowSettingsScreen(&a, apikey, func(newApikey string) {

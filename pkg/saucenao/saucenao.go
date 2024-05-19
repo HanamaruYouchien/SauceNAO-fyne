@@ -2,6 +2,7 @@ package saucenao
 
 import (
 	"bytes"
+	"encoding/json"
 	"io"
 	"mime/multipart"
 	"net/http"
@@ -17,7 +18,25 @@ const (
 	fieldImageFile       = "file"
 )
 
-func SearchByURL(apikey string, imageUrl string) ([]byte, error) {
+func SearchByURL(apikey string, imageUrl string) (*Response, error) {
+	raw, err := SearchRawByURL(apikey, imageUrl)
+	if err != nil {
+		return nil, err
+	}
+
+	return ParseResponse(raw)
+}
+
+func SearchByFile(apikey string, imageFile []byte) (*Response, error) {
+	raw, err := SearchRawByFile(apikey, imageFile)
+	if err != nil {
+		return nil, err
+	}
+
+	return ParseResponse(raw)
+}
+
+func SearchRawByURL(apikey string, imageUrl string) ([]byte, error) {
 	q := url.Values{}
 	q.Add(fieldOutputType, fieldOutputTypeValue)
 	q.Add(fieldApikey, apikey)
@@ -28,14 +47,14 @@ func SearchByURL(apikey string, imageUrl string) ([]byte, error) {
 		return []byte{}, err
 	}
 
-	ret, err := io.ReadAll(resp.Body)
+	respBytes, err := io.ReadAll(resp.Body)
 	if err != nil {
 		return []byte{}, err
 	}
-	return ret, nil
+	return respBytes, nil
 }
 
-func SearchByFile(apikey string, imageFile []byte) ([]byte, error) {
+func SearchRawByFile(apikey string, imageFile []byte) ([]byte, error) {
 	q := url.Values{}
 	q.Add(fieldOutputType, fieldOutputTypeValue)
 	q.Add(fieldApikey, apikey)
@@ -61,10 +80,21 @@ func SearchByFile(apikey string, imageFile []byte) ([]byte, error) {
 
 	client := http.Client{}
 	resp, err := client.Do(req)
-
-	ret, err := io.ReadAll(resp.Body)
 	if err != nil {
 		return []byte{}, err
 	}
-	return ret, nil
+
+	respBytes, err := io.ReadAll(resp.Body)
+	if err != nil {
+		return []byte{}, err
+	}
+	return respBytes, nil
+}
+
+func ParseResponse(raw []byte) (*Response, error) {
+	resp := &Response{}
+	if err := json.Unmarshal(raw, resp); err != nil {
+		return nil, err
+	}
+	return resp, nil
 }
