@@ -5,4 +5,4 @@ Website = "https://github.com/HanamaruYouchien/SauceNAO-fyne"
   Name = "SauceNAO"
   ID = "org.eu.sdsz.hanamaru.SauceNAO_fyne"
   Version = "0.1.0"
-  Build = 3
+  Build = 10

@@ -22,6 +22,12 @@ func ShowSettingsScreen(a *fyne.App, apikey string, onSave func(newApikey string
 	settingsScreen.Show()
 }
 
+func ShowResultScreen(a *fyne.App, data *[]saucenao.Result) {
+	resultScreen := (*a).NewWindow("Result")
+	resultScreen.SetContent(screen.ResultScreen(data))
+	resultScreen.Show()
+}
+
 func main() {
 	a := app.New()
 	pref := a.Preferences()
@@ -50,9 +56,7 @@ func main() {
 				return
 			}
 
-			for k, v := range resp.Results {
-				fmt.Println(k, v)
-			}
+			ShowResultScreen(&a, &resp.Results)
 		},
 		func() {
 			ShowSettingsScreen(&a, apikey, func(newApikey string) {
@@ -62,10 +66,6 @@ func main() {
 		},
 	))
 
-	w := a.NewWindow("Result")
-	w.SetContent(component.ResultItem("https://saucenao.com/images/static/banner_large.gif", "Saucenao", "logo", "https://saucenao.com", 50))
-
-	// mainWindow.Show()
-	w.Show()
+	mainWindow.Show()
 	a.Run()
 }
