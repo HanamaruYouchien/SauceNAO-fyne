@@ -1,5 +1,12 @@
 package saucenao
 
+var keysTitle = [...]string{"title", "eng_name", "material", "source", "created_at"}
+var keysAuthor = [...]string{"author", "author_name", "member_name", "pawoo_user_username", "twitter_user_handle", "company", "creator"}
+
+const keyCreator = "creator"
+
+var keysUrl = [...]string{"ext_urls", "getchu_id"}
+
 type Response struct {
 	Header  Header   `json:"header"`
 	Results []Result `json:"results"`
@@ -39,4 +46,46 @@ type Result struct {
 		Hidden     int     `json:"hidden"`
 	} `json:"header"`
 	Data ResultData `json:"data"`
+}
+
+func (r *Result) GetTitle() string {
+	return r.Data.GetTitle()
+}
+
+func (rd *ResultData) GetTitle() string {
+	for _, key := range keysTitle {
+		if val, ok := (*rd)[key]; ok {
+			return val.(string)
+		}
+	}
+	return ""
+}
+
+func (r *Result) GetAuthor() string {
+	return r.Data.GetAuthor()
+}
+
+func (rd *ResultData) GetAuthor() string {
+	for _, key := range keysAuthor {
+		if val, ok := (*rd)[key]; ok {
+			return val.(string)
+		}
+	}
+	if val, ok := (*rd)[keyCreator]; ok {
+		return val.([]string)[0]
+	}
+	return ""
+}
+
+func (r *Result) GetUrls() []string {
+	return r.Data.GetUrls()
+}
+
+func (rd *ResultData) GetUrls() []string {
+	for _, key := range keysUrl {
+		if val, ok := (*rd)[key]; ok {
+			return val.([]string)
+		}
+	}
+	return []string{}
 }
