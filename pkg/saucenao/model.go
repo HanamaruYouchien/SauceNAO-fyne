@@ -1,7 +1,7 @@
 package saucenao
 
 var keysTitle = [...]string{"title", "eng_name", "material", "source", "created_at"}
-var keysAuthor = [...]string{"author", "author_name", "member_name", "pawoo_user_username", "twitter_user_handle", "company", "creator"}
+var keysAuthor = [...]string{"author", "author_name", "member_name", "pawoo_user_username", "twitter_user_handle", "company"}
 
 const keyCreator = "creator"
 
@@ -72,7 +72,12 @@ func (rd *ResultData) GetAuthor() string {
 		}
 	}
 	if val, ok := (*rd)[keyCreator]; ok {
-		return val.([]string)[0]
+		switch val.(type) {
+		case string:
+			return val.(string)
+		default:
+			return val.([]interface{})[0].(string)
+		}
 	}
 	return ""
 }
@@ -82,10 +87,13 @@ func (r *Result) GetUrls() []string {
 }
 
 func (rd *ResultData) GetUrls() []string {
+	ret := []string{}
 	for _, key := range keysUrl {
 		if val, ok := (*rd)[key]; ok {
-			return val.([]string)
+			for _, v := range val.([]interface{}) {
+				ret = append(ret, v.(string))
+			}
 		}
 	}
-	return []string{}
+	return ret
 }
