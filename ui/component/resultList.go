@@ -31,17 +31,20 @@ func ResultListByList(data *[]saucenao.Result) *widget.List {
 func ResultItem(data *saucenao.Result) *fyne.Container {
 	var imgThumbnail *canvas.Image
 	if rscThumbnail, err := fyne.LoadResourceFromURLString(data.Header.Thumbnail); err != nil {
-		imgThumbnail = canvas.NewImageFromResource(rscThumbnail)
-	} else {
 		imgThumbnail = canvas.NewImageFromResource(theme.BrokenImageIcon())
+	} else {
+		imgThumbnail = canvas.NewImageFromResource(rscThumbnail)
 	}
 	imgThumbnail.FillMode = canvas.ImageFillContain
 	imgThumbnail.SetMinSize(fyne.NewSize(100, 100))
 
-	lbTitle := widget.NewLabel("Title")
-	lbDescription := widget.NewLabel("Desc")
-	urlTarget, _ := url.Parse("https://hanamaru.sdsz.eu.org")
-	lnkTarget := widget.NewHyperlink("link", urlTarget)
+	lbTitle := widget.NewLabel(data.GetTitle())
+	lbDescription := widget.NewLabel(data.GetAuthor())
+
+	var urlStr = data.GetUrls()[0]
+
+	urlTarget, _ := url.Parse(urlStr)
+	lnkTarget := widget.NewHyperlink(urlStr, urlTarget)
 	ctnDetail := container.New(layout.NewVBoxLayout(), lbTitle, lbDescription, lnkTarget)
 
 	lbSimilarity := widget.NewLabel(strconv.FormatFloat(data.Header.Similarity, 'f', 2, 64) + "%")
